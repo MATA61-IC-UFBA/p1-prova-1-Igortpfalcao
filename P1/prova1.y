@@ -3,21 +3,25 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int yylex();
-extern int yyparse();
-void yyerror(const char *msg);
-
+extern int yylex(); 
+int yyerror(const char *s);
 %}
 
-%token ERROR
+%union {
+    int num;
+    char *str;
+}
+
+%token PRINT CONCAT LENGTH
+%token <num> NUMBER
+%token <str> STRING ID
 
 %start program
 
 %%
 
-/* programa */
 program
-: stmt_list 
+: stmt_list
 ;
 
 stmt_list
@@ -26,13 +30,16 @@ stmt_list
 ;
 
 stmt
-: IDENT ASSIGN expr
-| PRINT LPAREN exprlist RPAREN
-| expr
+: ID '=' expr
+| PRINT '(' expr ')'
 ;
 
 expr
-/* completar */
+: NUMBER
+| STRING
+| ID
+| LENGTH '(' expr ')'
+| CONCAT '(' expr ',' expr ')'
+;
 
 %%
-
