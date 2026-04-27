@@ -2,23 +2,42 @@
 #include "prova1.tab.h"
 #include <stdlib.h>
 #include <string.h>
-
-void yyerror(const char *msg);
-int yylex();
 %}
 
+%option yylineno
 %option noyywrap
-
 %%
 
-[0-9]+(\.[0-9]+)?   { return NUM; }
-"+"                 { return PLUS; }
-"-"                 { return MINUS; }
-"*"                 { return TIMES; }
-"/"                 { return DIV; }
-\n                  { return EOL; }
-[ \t]+              { /* ignora espacos em branco */ }
-.                   { return ERROR; }
+\n                  ;
 
+[ \t\r]+            ;
+
+/\\.*               ;   // comentário (linha começando com \)
+
+"print"             { return PRINT; }
+"concat"            { return CONCAT; }
+"length"            { return LENGTH; }
+
+[0-9]+ {
+    yylval.num = atoi(yytext);
+    return NUMBER;
+}
+
+\"[^\"]*\" {
+    yylval.str = strdup(yytext);
+    return STRING;
+}
+
+[a-zA-Z_][a-zA-Z0-9_]* {
+    yylval.str = strdup(yytext);
+    return ID;
+}
+
+"="                 return '=';
+","                 return ',';
+"("                 return '(';
+")"                 return ')';
+
+.                   { return ERROR; }
 
 %%
