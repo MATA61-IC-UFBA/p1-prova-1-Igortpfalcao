@@ -6,13 +6,14 @@
 
 %option yylineno
 %option noyywrap
+
 %%
 
 \n                  ;
 
 [ \t\r]+            ;
 
-/\\.*               ;   // comentário (linha começando com \)
+\\[^\n]*    ;
 
 "print"             { return PRINT; }
 "concat"            { return CONCAT; }
@@ -38,6 +39,5 @@
 "("                 return '(';
 ")"                 return ')';
 
-.                   { return ERROR; }
 
 %%
